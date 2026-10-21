@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#176d59">
+  <title>令和8年度 司法書士試験 - 正解別冊</title>
+  <style>
+  :root {
+    color-scheme: light;
+    --ink: #13211d;
+    --muted: #5f6e68;
+    --paper: #f6f3ea;
+    --card: #ffffff;
+    --line: #d9ded8;
+    --accent: #176d59;
+    --accent-soft: #e1f2ec;
+    --warning: #7a4f00;
+    --shadow: 0 14px 34px rgba(27, 44, 38, .10);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, #eaf2ed 0, var(--paper) 280px);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", sans-serif;
+    line-height: 1.8;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  button, select { font: inherit; }
+  .shell { width: min(100% - 28px, 820px); margin: 0 auto; padding: 28px 0 64px; }
+  .hero { padding: 22px 0 16px; }
+  .eyebrow { color: var(--accent); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+  h1 { margin: 4px 0 8px; font-size: clamp(1.65rem, 7vw, 2.55rem); line-height: 1.3; }
+  .lead { margin: 0; color: var(--muted); }
+  .notice, .card, .answer-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .notice { padding: 14px 16px; margin: 14px 0; border-left: 5px solid var(--accent); }
+  .controls { position: sticky; top: 0; z-index: 5; padding: 10px 0; backdrop-filter: blur(12px); }
+  .control-panel { background: rgba(255,255,255,.93); border: 1px solid var(--line); border-radius: 16px; padding: 10px; box-shadow: 0 8px 22px rgba(27,44,38,.08); }
+  .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .segmented button, .nav button, .action, .choice {
+    border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 12px; min-height: 46px; cursor: pointer;
+  }
+  .segmented button[aria-pressed="true"] { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 800; }
+  .jump-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-top: 10px; }
+  .jump-row select { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 11px; background: #fff; padding: 0 12px; }
+  .progress { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+  .card { padding: clamp(18px, 5vw, 30px); margin-top: 12px; }
+  .question-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .82rem; }
+  .question-copy { font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: clamp(1rem, 4.3vw, 1.12rem); }
+  .question-copy p { margin: .9em 0; }
+  .question-copy p:first-child { font-weight: 800; font-size: 1.08em; }
+  fieldset { border: 0; padding: 0; margin: 24px 0 0; }
+  legend { font-weight: 800; margin-bottom: 10px; }
+  .choices { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .choice { position: relative; display: grid; place-items: center; min-height: 52px; font-weight: 850; }
+  .choice input { position: absolute; opacity: 0; pointer-events: none; }
+  .choice:has(input:checked) { color: #fff; background: var(--accent); border-color: var(--accent); }
+  .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .nav button:disabled { opacity: .45; cursor: default; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .action { padding: 8px 13px; min-height: 40px; font-size: .88rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .answer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 10px; }
+  .answer-card { padding: 13px; text-align: center; box-shadow: none; }
+  .answer-card .number { display: block; color: var(--muted); font-size: .82rem; }
+  .answer-card .answer { display: block; color: var(--accent); font-size: 1.65rem; font-weight: 900; line-height: 1.3; }
+  .section-title { margin: 30px 0 12px; }
+  .empty-explanation { margin-top: 18px; padding: 14px; border: 1px dashed #caa758; border-radius: 12px; color: var(--warning); background: #fffaf0; }
+  @media (max-width: 420px) {
+    .shell { width: min(100% - 18px, 820px); padding-top: 14px; }
+    .card { border-radius: 15px; }
+    .question-meta { display: block; }
+  }
+  @media print {
+    body { background: #fff; }
+    .controls, .nav, .tools { display: none !important; }
+    .shell { width: 100%; padding: 0; }
+    .card { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="eyebrow">ANSWER KEY / SEPARATE EDITION</div>
+      <h1>令和8年度 正解別冊</h1>
+      <p class="lead">多肢択一式 / 午前35問・午後35問</p>
+    </header>
+    <div class="notice"><strong>正解番号だけを収録。</strong>問題本文とは分離しています。</div>
+    <h2 class="section-title">午前の部</h2>
+    <section class="answer-grid" aria-label="午前の部の正解"><div class="answer-card"><span class="number">第1問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第2問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第3問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第4問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第5問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第6問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第7問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第8問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第9問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第10問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第11問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第12問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第13問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第14問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第15問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第16問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第17問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第18問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第19問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第20問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第21問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第22問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第23問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第24問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第25問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第26問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第27問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第28問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第29問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第30問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第31問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第32問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第33問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第34問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第35問</span><span class="answer">3</span></div></section>
+    <h2 class="section-title">午後の部</h2>
+    <section class="answer-grid" aria-label="午後の部の正解"><div class="answer-card"><span class="number">第1問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第2問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第3問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第4問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第5問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第6問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第7問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第8問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第9問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第10問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第11問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第12問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第13問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第14問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第15問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第16問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第17問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第18問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第19問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第20問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第21問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第22問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第23問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第24問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第25問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第26問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第27問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第28問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第29問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第30問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第31問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第32問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第33問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第34問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第35問</span><span class="answer">5</span></div></section>
+    <div class="empty-explanation"><strong>解説は未収録です。</strong></div>
+  </main>
+</body>
+</html>
