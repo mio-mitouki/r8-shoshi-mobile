@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#176d59">
-  <title>令和8年度 司法書士試験 - 問題のみ</title>
+  <title>令和8年度 司法書士試験 - 問題・正解</title>
   <style>
   :root {
     color-scheme: light;
@@ -44,6 +44,14 @@
     box-shadow: var(--shadow);
   }
   .notice { padding: 14px 16px; margin: 14px 0; border-left: 5px solid var(--accent); }
+  .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 16px; }
+  .mode-tabs button {
+    border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 14px;
+    min-height: 52px; padding: 8px 12px; font: inherit; font-weight: 800; cursor: pointer;
+  }
+  .mode-tabs button[aria-selected="true"] { color: #fff; background: var(--accent); border-color: var(--accent); }
+  [hidden] { display: none !important; }
+  .answer-panel { padding-bottom: 16px; }
   .controls { position: sticky; top: 0; z-index: 5; padding: 10px 0; backdrop-filter: blur(12px); }
   .control-panel { background: rgba(255,255,255,.93); border: 1px solid var(--line); border-radius: 16px; padding: 10px; box-shadow: 0 8px 22px rgba(27,44,38,.08); }
   .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -83,7 +91,7 @@
   }
   @media print {
     body { background: #fff; }
-    .controls, .nav, .tools { display: none !important; }
+    .mode-tabs, .controls, .nav, .tools { display: none !important; }
     .shell { width: 100%; padding: 0; }
     .card { box-shadow: none; break-inside: avoid; }
   }
@@ -94,41 +102,126 @@
     <header class="hero">
       <div class="eyebrow">MOBILE PRACTICE EDITION</div>
       <h1>令和8年度 司法書士試験</h1>
-      <p class="lead">午前35問・午後35問 / 問題のみ / オフライン対応</p>
+      <p class="lead">午前35問・午後35問 / 問題・正解 / オフライン対応</p>
     </header>
-    <div class="notice"><strong>正解と解説は入っていません。</strong>選んだ番号はこの端末内だけに保存されます。</div>
 
-    <div class="controls">
-      <div class="control-panel">
-        <div class="segmented" aria-label="試験区分">
-          <button id="morning-tab" type="button" aria-pressed="true">午前の部</button>
-          <button id="afternoon-tab" type="button" aria-pressed="false">午後の部</button>
-        </div>
-        <div class="jump-row">
-          <label><span class="sr-only">問題を選択</span><select id="jump"></select></label>
-          <span class="progress" id="progress"></span>
+    <nav class="mode-tabs" role="tablist" aria-label="表示内容">
+      <button id="questions-tab" type="button" role="tab" aria-selected="true" aria-controls="questions-panel">問題</button>
+      <button id="answers-tab" type="button" role="tab" aria-selected="false" aria-controls="answers-panel">正解</button>
+    </nav>
+
+    <section id="questions-panel" role="tabpanel" aria-labelledby="questions-tab">
+      <div class="notice"><strong>問題を解いてから正解タブで確認できます。</strong>選んだ番号はこの端末内だけに保存されます。</div>
+
+      <div class="controls">
+        <div class="control-panel">
+          <div class="segmented" aria-label="試験区分">
+            <button id="morning-tab" type="button" aria-pressed="true">午前の部</button>
+            <button id="afternoon-tab" type="button" aria-pressed="false">午後の部</button>
+          </div>
+          <div class="jump-row">
+            <label><span class="sr-only">問題を選択</span><select id="jump"></select></label>
+            <span class="progress" id="progress"></span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <article class="card" id="question-card" aria-live="polite">
-      <div class="question-meta"><span id="question-label"></span></div>
-      <div class="question-copy" id="question-copy"></div>
-      <fieldset>
-        <legend>解答を選ぶ</legend>
-        <div class="choices" id="choices"></div>
-      </fieldset>
-    </article>
+      <article class="card" id="question-card" aria-live="polite">
+        <div class="question-meta"><span id="question-label"></span></div>
+        <div class="question-copy" id="question-copy"></div>
+        <fieldset>
+          <legend>解答を選ぶ</legend>
+          <div class="choices" id="choices"></div>
+        </fieldset>
+      </article>
 
-    <nav class="nav" aria-label="問題移動">
-      <button type="button" id="prev">前の問題</button>
-      <button type="button" id="next">次の問題</button>
-    </nav>
-    <div class="tools">
-      <button class="action" type="button" id="unanswered">次の未回答へ</button>
-      <button class="action" type="button" id="clear-current">この解答を消す</button>
-      <button class="action" type="button" id="export">解答メモを保存</button>
-    </div>
+      <nav class="nav" aria-label="問題移動">
+        <button type="button" id="prev">前の問題</button>
+        <button type="button" id="next">次の問題</button>
+      </nav>
+      <div class="tools">
+        <button class="action" type="button" id="unanswered">次の未回答へ</button>
+        <button class="action" type="button" id="clear-current">この解答を消す</button>
+        <button class="action" type="button" id="export">解答メモを保存</button>
+      </div>
+    </section>
+
+    <section id="answers-panel" class="answer-panel" role="tabpanel" aria-labelledby="answers-tab" hidden>
+      <div class="notice"><strong>正解番号だけを収録。</strong>解説は未収録です。</div>
+    <h2 class="section-title">午前の部</h2>
+    <section class="answer-grid" aria-label="午前の部の正解"><div class="answer-card"><span class="number">第1問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第2問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第3問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第4問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第5問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第6問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第7問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第8問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第9問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第10問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第11問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第12問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第13問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第14問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第15問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第16問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第17問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第18問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第19問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第20問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第21問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第22問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第23問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第24問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第25問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第26問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第27問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第28問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第29問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第30問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第31問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第32問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第33問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第34問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第35問</span><span class="answer">3</span></div></section>
+    <h2 class="section-title">午後の部</h2>
+    <section class="answer-grid" aria-label="午後の部の正解"><div class="answer-card"><span class="number">第1問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第2問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第3問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第4問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第5問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第6問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第7問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第8問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第9問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第10問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第11問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第12問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第13問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第14問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第15問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第16問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第17問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第18問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第19問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第20問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第21問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第22問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第23問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第24問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第25問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第26問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第27問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第28問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第29問</span><span class="answer">5</span></div>
+<div class="answer-card"><span class="number">第30問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第31問</span><span class="answer">3</span></div>
+<div class="answer-card"><span class="number">第32問</span><span class="answer">1</span></div>
+<div class="answer-card"><span class="number">第33問</span><span class="answer">4</span></div>
+<div class="answer-card"><span class="number">第34問</span><span class="answer">2</span></div>
+<div class="answer-card"><span class="number">第35問</span><span class="answer">5</span></div></section>
+    <div class="empty-explanation"><strong>解説は未収録です。</strong></div>
+    </section>
 
   </main>
 
@@ -145,6 +238,16 @@
     const el = id => document.getElementById(id);
     const sectionName = () => section === 'morning' ? '午前' : '午後';
     const answerKey = q => `${section}-${q.number}`;
+
+    function showMode(mode, updateHash = true) {
+      const showAnswers = mode === 'answers';
+      el('questions-tab').setAttribute('aria-selected', String(!showAnswers));
+      el('answers-tab').setAttribute('aria-selected', String(showAnswers));
+      el('questions-panel').hidden = showAnswers;
+      el('answers-panel').hidden = !showAnswers;
+      if (updateHash) history.replaceState(null, '', showAnswers ? '#answers' : '#questions');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
 
     function renderTabs() {
       el('morning-tab').setAttribute('aria-pressed', String(section === 'morning'));
@@ -187,6 +290,8 @@
     }
 
     function setSection(next) { section = next; index = 0; render(); }
+    el('questions-tab').addEventListener('click', () => showMode('questions'));
+    el('answers-tab').addEventListener('click', () => showMode('answers'));
     el('morning-tab').addEventListener('click', () => setSection('morning'));
     el('afternoon-tab').addEventListener('click', () => setSection('afternoon'));
     el('jump').addEventListener('change', event => { index = Number(event.target.value); render(); });
@@ -213,6 +318,7 @@
       URL.revokeObjectURL(a.href);
     });
     render();
+    showMode(location.hash === '#answers' ? 'answers' : 'questions', false);
   })();
   </script>
 </body>
